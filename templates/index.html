@@ -87,7 +87,7 @@
 
 
         /* =====================================
-           LEFT PANEL
+           LEFT CONTROL PANEL
         ====================================== */
 
         .panel {
@@ -206,6 +206,21 @@
 
 
         /* =====================================
+           MAP CONTAINER
+        ====================================== */
+
+        .map-container {
+
+            position: relative;
+
+            width: 100%;
+
+            height: 100%;
+
+        }
+
+
+        /* =====================================
            MAP
         ====================================== */
 
@@ -219,7 +234,54 @@
 
 
         /* =====================================
-           LOCATION INFO
+           SEARCH BOX
+        ====================================== */
+
+        .search-box {
+
+            position: absolute;
+
+            top: 15px;
+
+            left: 15px;
+
+            right: 15px;
+
+            z-index: 1000;
+
+            display: flex;
+
+            gap: 10px;
+
+        }
+
+
+        .search-box input {
+
+            flex: 1;
+
+            margin-top: 0;
+
+            background: white;
+
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+
+        }
+
+
+        .search-box button {
+
+            width: 120px;
+
+            margin-top: 0;
+
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+
+        }
+
+
+        /* =====================================
+           LOCATION INFORMATION
         ====================================== */
 
         .location-info {
@@ -340,9 +402,32 @@
             }
 
 
+            .map-container {
+
+                height: 500px;
+
+            }
+
+
             #map {
 
                 height: 500px;
+
+            }
+
+
+            .search-box {
+
+                left: 10px;
+
+                right: 10px;
+
+            }
+
+
+            .search-box button {
+
+                width: 100px;
 
             }
 
@@ -356,8 +441,8 @@
 
 
     <!-- =========================================
-     HEADER
-========================================== -->
+         HEADER
+    ========================================== -->
 
     <header>
 
@@ -372,15 +457,15 @@
 
 
     <!-- =========================================
-     MAIN CONTAINER
-========================================== -->
+         MAIN CONTAINER
+    ========================================== -->
 
     <div class="container">
 
 
         <!-- =====================================
-         LEFT CONTROL PANEL
-    ====================================== -->
+             LEFT CONTROL PANEL
+        ====================================== -->
 
         <div class="panel">
 
@@ -398,16 +483,20 @@
             <!-- LOCATION INFORMATION -->
 
             <div class="location-info" id="locationInfo">
+
                 📍 Location not selected
+
                 <br>
+
                 Click on the map or use your current location.
+
             </div>
 
 
 
             <!-- =================================
-             TIME FEATURES
-        ================================== -->
+                 TIME FEATURES
+            ================================== -->
 
             <label for="hour">
                 Hour
@@ -453,7 +542,6 @@
             </select>
 
 
-
             <label for="month">
                 Month
             </label>
@@ -462,11 +550,9 @@
 
 
 
-
-
             <!-- =================================
-             WEATHER FEATURES
-        ================================== -->
+                 WEATHER FEATURES
+            ================================== -->
 
             <label for="temp">
                 Temperature (Kelvin)
@@ -498,8 +584,8 @@
 
 
             <!-- =================================
-             WEATHER TYPE
-        ================================== -->
+                 WEATHER TYPE
+            ================================== -->
 
             <label for="weather_main">
                 Weather
@@ -534,7 +620,6 @@
             </select>
 
 
-
             <label for="weather_description">
                 Weather Description
             </label>
@@ -544,8 +629,8 @@
 
 
             <!-- =================================
-             HOLIDAY
-        ================================== -->
+                 HOLIDAY
+            ================================== -->
 
             <label for="holiday">
                 Holiday
@@ -574,8 +659,8 @@
 
 
             <!-- =================================
-             PREDICT BUTTON
-        ================================== -->
+                 PREDICT BUTTON
+            ================================== -->
 
             <button onclick="predictTraffic()">
 
@@ -586,22 +671,29 @@
 
 
             <!-- =================================
-             RESULT
-        ================================== -->
+                 RESULT
+            ================================== -->
 
             <div class="result">
 
                 <div class="result-title">
+
                     🚦 Predicted Traffic
+
                 </div>
+
 
                 <div class="traffic-number" id="trafficNumber">
                     --
                 </div>
 
+
                 <div class="vehicles">
+
                     vehicles / hour
+
                 </div>
+
 
                 <div class="traffic-level" id="trafficLevel">
                     --
@@ -610,17 +702,22 @@
             </div>
 
 
+
             <!-- =================================
-     PREDICTION SUMMARY
-================================== -->
+                 PREDICTION SUMMARY
+            ================================== -->
 
             <div class="info-card">
 
-                <strong>📊 Prediction Summary</strong>
+                <strong>
+                    📊 Prediction Summary
+                </strong>
 
                 <br><br>
 
-                <strong>📍 Location</strong>
+                <strong>
+                    📍 Selected Location
+                </strong>
 
                 <div id="summaryLocation">
                     Not selected
@@ -628,7 +725,19 @@
 
                 <br>
 
-                <strong>🕐 Prediction Time</strong>
+                <strong>
+                    🗺️ Coordinates
+                </strong>
+
+                <div id="summaryCoordinates">
+                    --
+                </div>
+
+                <br>
+
+                <strong>
+                    🕐 Prediction Time
+                </strong>
 
                 <div id="summaryTime">
                     --
@@ -636,7 +745,9 @@
 
                 <br>
 
-                <strong>🚗 Predicted Traffic Flow</strong>
+                <strong>
+                    🚗 Predicted Traffic Flow
+                </strong>
 
                 <div id="summaryTraffic">
                     --
@@ -644,7 +755,9 @@
 
                 <br>
 
-                <strong>🚦 Traffic Condition</strong>
+                <strong>
+                    🚦 Traffic Condition
+                </strong>
 
                 <div id="summaryLevel">
                     --
@@ -653,52 +766,101 @@
             </div>
 
 
+
             <!-- =================================
-             PROJECT INFORMATION
-        ================================== -->
+                 PROJECT INFORMATION
+            ================================== -->
 
             <div class="info-card">
 
-                <strong>About this project</strong>
+                <strong>
+                    About this project
+                </strong>
 
                 <br><br>
 
-                This system uses a
-                <strong>Random Forest Regression</strong>
+                This system uses an
+                <strong>
+                    Optimized Random Forest Regression
+                </strong>
                 model to predict traffic volume.
 
                 <br><br>
 
                 The model was trained using the
-                <strong>UCI Metro Interstate Traffic Volume</strong>
+                <strong>
+                    UCI Metro Interstate Traffic Volume
+                </strong>
                 dataset containing 48,204 observations.
 
                 <br><br>
 
+                The model was improved using
+                <strong>
+                    hyperparameter tuning
+                </strong>
+                to achieve better prediction performance.
+
+                <br><br>
+
                 Model R² Score:
-                <strong>92.42%</strong>
+                <strong>
+                    92.84%
+                </strong>
+
+                <br><br>
+
+                Mean Absolute Error (MAE):
+                <strong>
+                    290.86 vehicles/hour
+                </strong>
+
+                <br><br>
+
+                Root Mean Squared Error (RMSE):
+                <strong>
+                    526.45 vehicles/hour
+                </strong>
 
             </div>
-
 
         </div>
 
 
 
         <!-- =====================================
-         MAP
-    ====================================== -->
+             RIGHT MAP AREA
+        ====================================== -->
 
-        <div id="map"></div>
+        <div class="map-container">
 
+
+            <!-- LOCATION SEARCH -->
+
+            <div class="search-box">
+
+                <input type="text" id="locationSearch" placeholder="🔎 Search city or location...">
+
+                <button onclick="searchLocation()">
+                    Search
+                </button>
+
+            </div>
+
+
+            <!-- MAP -->
+
+            <div id="map"></div>
+
+        </div>
 
     </div>
 
 
 
     <!-- =========================================
-     LEAFLET JAVASCRIPT
-========================================== -->
+         LEAFLET JAVASCRIPT
+    ========================================== -->
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
     </script>
@@ -724,31 +886,23 @@
 
         function initMap() {
 
-
-            /*
-               Default location:
-               India
-            */
-
             const defaultLocation = [
                 20.5937,
                 78.9629
             ];
 
 
-            /*
-               Create Leaflet map
-            */
-
-            map = L.map("map").setView(
+            map = L.map("map", {
+                zoomControl: false
+            }).setView(
                 defaultLocation,
                 5
             );
 
+            L.control.zoom({
+                position: "bottomright"
+            }).addTo(map);
 
-            /*
-               OpenStreetMap tiles
-            */
 
             L.tileLayer(
                 "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
@@ -773,10 +927,8 @@
                 "click",
                 function (event) {
 
-
                     const lat =
                         event.latlng.lat;
-
 
                     const lng =
                         event.latlng.lng;
@@ -858,7 +1010,7 @@
 
 
             /*
-               Update information box
+               Update location information
             */
 
             document.getElementById(
@@ -877,15 +1029,24 @@
 
                 "Longitude: " +
                 lng.toFixed(6);
+
+
+            /*
+               Update prediction summary
+            */
+
             document.getElementById(
                 "summaryLocation"
             ).innerText =
-                locationName +
-                " (" +
-                lat.toFixed(4) +
+                locationName;
+
+
+            document.getElementById(
+                "summaryCoordinates"
+            ).innerText =
+                lat.toFixed(6) +
                 ", " +
-                lng.toFixed(4) +
-                ")";
+                lng.toFixed(6);
 
         }
 
@@ -897,10 +1058,6 @@
 
         function getCurrentLocation() {
 
-
-            /*
-               Check browser support
-            */
 
             if (!navigator.geolocation) {
 
@@ -914,26 +1071,16 @@
             }
 
 
-            /*
-               Ask browser for location
-            */
-
             navigator.geolocation.getCurrentPosition(
 
                 function (position) {
 
-
                     const lat =
                         position.coords.latitude;
-
 
                     const lng =
                         position.coords.longitude;
 
-
-                    /*
-                       Put marker on current location
-                    */
 
                     setLocation(
                         lat,
@@ -941,12 +1088,10 @@
                         "Your Current Location"
                     );
 
-
                 },
 
 
                 function (error) {
-
 
                     alert(
                         "Unable to get your location. " +
@@ -967,6 +1112,7 @@
         ========================================== */
 
         async function predictTraffic() {
+
 
             /*
                Collect values from form
@@ -1002,29 +1148,37 @@
                     document.getElementById("weather_main").value,
 
                 weather_description:
-                    document.getElementById("weather_description").value
+                    document.getElementById(
+                        "weather_description"
+                    ).value
 
             };
 
 
             try {
 
+
                 /*
                    Send data to Flask
                 */
 
-                const response = await fetch(
-                    "/predict",
-                    {
-                        method: "POST",
+                const response =
+                    await fetch(
+                        "/predict",
+                        {
 
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
+                            method: "POST",
 
-                        body: JSON.stringify(data)
-                    }
-                );
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body:
+                                JSON.stringify(data)
+
+                        }
+                    );
 
 
                 /*
@@ -1049,9 +1203,7 @@
 
 
                 /*
-                   =====================================
-                   DISPLAY MAIN PREDICTED TRAFFIC NUMBER
-                   =====================================
+                   Display predicted traffic
                 */
 
                 document.getElementById(
@@ -1061,9 +1213,7 @@
 
 
                 /*
-                   =====================================
-                   DISPLAY TRAFFIC LEVEL
-                   =====================================
+                   Display traffic level
                 */
 
                 const trafficLevelElement =
@@ -1077,12 +1227,12 @@
 
 
                 /*
-                   =====================================
-                   CHANGE TRAFFIC LEVEL COLOR
-                   =====================================
+                   Change traffic level color
                 */
 
-                if (result.traffic_level === "Low") {
+                if (
+                    result.traffic_level === "Low"
+                ) {
 
                     trafficLevelElement.style.color =
                         "#16a34a";
@@ -1116,9 +1266,7 @@
 
 
                 /*
-                   =====================================
-                   UPDATE PREDICTION SUMMARY
-                   =====================================
+                   Update prediction summary
                 */
 
                 document.getElementById(
@@ -1135,9 +1283,7 @@
 
 
                 /*
-                   =====================================
-                   CURRENT PREDICTION TIME
-                   =====================================
+                   Current prediction time
                 */
 
                 const predictionTime =
@@ -1167,9 +1313,6 @@
         }
 
 
-        /* ==========================================
-           START APPLICATION
-        ========================================== */
 
         /* ==========================================
            SET CURRENT DATE AND TIME
@@ -1177,37 +1320,201 @@
 
         function setCurrentDateTime() {
 
+
             const now = new Date();
 
-            // Current hour
-            document.getElementById("hour").value =
+
+            /*
+               Current hour
+            */
+
+            document.getElementById(
+                "hour"
+            ).value =
                 now.getHours();
 
 
-            // JavaScript:
-            // Sunday = 0
-            // Monday = 1
-            // ...
-            //
-            // Our model:
-            // Monday = 0
-            // Tuesday = 1
-            // ...
-            // Sunday = 6
+            /*
+               JavaScript:
+               Sunday = 0
+               Monday = 1
+               ...
+               Saturday = 6
 
-            const jsDay = now.getDay();
+               Model:
+               Monday = 0
+               Tuesday = 1
+               ...
+               Sunday = 6
+            */
+
+            const jsDay =
+                now.getDay();
+
 
             const modelDay =
-                jsDay === 0 ? 6 : jsDay - 1;
+                jsDay === 0
+                    ? 6
+                    : jsDay - 1;
 
-            document.getElementById("day_of_week").value =
+
+            document.getElementById(
+                "day_of_week"
+            ).value =
                 modelDay;
 
 
-            // Current month
-            document.getElementById("month").value =
+            /*
+               Current month
+            */
+
+            document.getElementById(
+                "month"
+            ).value =
                 now.getMonth() + 1;
+
         }
+
+
+
+        /* ==========================================
+           LOCATION SEARCH
+        ========================================== */
+
+        async function searchLocation() {
+
+
+            const query =
+                document
+                    .getElementById(
+                        "locationSearch"
+                    )
+                    .value
+                    .trim();
+
+
+            if (!query) {
+
+                alert(
+                    "Please enter a location."
+                );
+
+                return;
+
+            }
+
+
+            try {
+
+
+                /*
+                   Search OpenStreetMap
+                   using Nominatim
+                */
+
+                const response =
+                    await fetch(
+
+                        "https://nominatim.openstreetmap.org/search?format=json&q=" +
+                        encodeURIComponent(query)
+
+                    );
+
+
+                const results =
+                    await response.json();
+
+
+                if (
+                    results.length === 0
+                ) {
+
+                    alert(
+                        "Location not found. " +
+                        "Please try another place."
+                    );
+
+                    return;
+
+                }
+
+
+                const place =
+                    results[0];
+
+
+                const lat =
+                    parseFloat(
+                        place.lat
+                    );
+
+
+                const lng =
+                    parseFloat(
+                        place.lon
+                    );
+
+
+                /*
+                   Update map
+                */
+
+                map.setView(
+                    [lat, lng],
+                    13
+                );
+
+
+                /*
+                   Set selected location
+                */
+
+                setLocation(
+                    lat,
+                    lng,
+                    place.display_name
+                );
+
+            }
+
+            catch (error) {
+
+                console.error(error);
+
+                alert(
+                    "Unable to search location. " +
+                    "Please try again."
+                );
+
+            }
+
+        }
+
+
+
+        /* ==========================================
+           SEARCH USING ENTER KEY
+        ========================================== */
+
+        document
+            .getElementById(
+                "locationSearch"
+            )
+            .addEventListener(
+                "keypress",
+                function (event) {
+
+                    if (
+                        event.key === "Enter"
+                    ) {
+
+                        searchLocation();
+
+                    }
+
+                }
+            );
+
 
 
         /* ==========================================

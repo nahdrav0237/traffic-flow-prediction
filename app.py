@@ -12,9 +12,7 @@ CORS(app)
 # LOAD ML MODEL
 # ==========================================
 
-model = joblib.load(
-    "model/traffic_flow_model.pkl"
-)
+model = joblib.load("model/traffic_flow_model_optimized.pkl")
 
 
 # ==========================================
