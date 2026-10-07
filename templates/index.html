@@ -1,0 +1,1226 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Traffic Flow Prediction</title>
+
+
+    <!-- =========================================
+         LEAFLET CSS
+    ========================================== -->
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+
+    <!-- =========================================
+         PAGE STYLING
+    ========================================== -->
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+
+        body {
+
+            margin: 0;
+
+            font-family: Arial, sans-serif;
+
+            background: #f4f6f8;
+
+        }
+
+
+        /* =====================================
+           HEADER
+        ====================================== */
+
+        header {
+
+            background: #1f2937;
+
+            color: white;
+
+            padding: 18px 30px;
+
+        }
+
+
+        header h1 {
+
+            margin: 0;
+
+            font-size: 28px;
+
+        }
+
+
+        header p {
+
+            margin: 5px 0 0;
+
+            color: #d1d5db;
+
+        }
+
+
+        /* =====================================
+           MAIN LAYOUT
+        ====================================== */
+
+        .container {
+
+            display: grid;
+
+            grid-template-columns: 360px 1fr;
+
+            height: calc(100vh - 90px);
+
+        }
+
+
+        /* =====================================
+           LEFT PANEL
+        ====================================== */
+
+        .panel {
+
+            background: white;
+
+            padding: 20px;
+
+            overflow-y: auto;
+
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+
+        }
+
+
+        .panel h2 {
+
+            margin-top: 0;
+
+            color: #111827;
+
+        }
+
+
+        /* =====================================
+           FORM ELEMENTS
+        ====================================== */
+
+        label {
+
+            display: block;
+
+            margin-top: 12px;
+
+            font-weight: bold;
+
+            color: #374151;
+
+        }
+
+
+        input,
+        select {
+
+            width: 100%;
+
+            padding: 10px;
+
+            margin-top: 5px;
+
+            border: 1px solid #d1d5db;
+
+            border-radius: 6px;
+
+            font-size: 14px;
+
+        }
+
+
+        input:focus,
+        select:focus {
+
+            outline: none;
+
+            border-color: #2563eb;
+
+        }
+
+
+        /* =====================================
+           BUTTONS
+        ====================================== */
+
+        button {
+
+            width: 100%;
+
+            padding: 12px;
+
+            margin-top: 15px;
+
+            border: none;
+
+            border-radius: 6px;
+
+            background: #2563eb;
+
+            color: white;
+
+            font-size: 16px;
+
+            cursor: pointer;
+
+        }
+
+
+        button:hover {
+
+            background: #1d4ed8;
+
+        }
+
+
+        #locationButton {
+
+            background: #059669;
+
+        }
+
+
+        #locationButton:hover {
+
+            background: #047857;
+
+        }
+
+
+        /* =====================================
+           MAP
+        ====================================== */
+
+        #map {
+
+            width: 100%;
+
+            height: 100%;
+
+        }
+
+
+        /* =====================================
+           LOCATION INFO
+        ====================================== */
+
+        .location-info {
+
+            margin-top: 15px;
+
+            padding: 12px;
+
+            background: #eff6ff;
+
+            border-radius: 6px;
+
+            font-size: 14px;
+
+            line-height: 1.6;
+
+        }
+
+
+        /* =====================================
+           RESULT CARD
+        ====================================== */
+
+        .result {
+
+            margin-top: 20px;
+
+            padding: 18px;
+
+            border-radius: 8px;
+
+            background: #f3f4f6;
+
+            text-align: center;
+
+        }
+
+
+        .result-title {
+
+            font-size: 16px;
+
+            color: #374151;
+
+        }
+
+
+        .traffic-number {
+
+            font-size: 40px;
+
+            font-weight: bold;
+
+            margin: 10px 0;
+
+            color: #111827;
+
+        }
+
+
+        .vehicles {
+
+            color: #6b7280;
+
+            font-size: 14px;
+
+        }
+
+
+        .traffic-level {
+
+            font-size: 24px;
+
+            font-weight: bold;
+
+            margin-top: 8px;
+
+        }
+
+
+        /* =====================================
+           INFORMATION CARD
+        ====================================== */
+
+        .info-card {
+
+            margin-top: 20px;
+
+            padding: 15px;
+
+            background: #f8fafc;
+
+            border-left: 4px solid #2563eb;
+
+            border-radius: 5px;
+
+            font-size: 13px;
+
+            line-height: 1.6;
+
+        }
+
+
+        /* =====================================
+           MOBILE
+        ====================================== */
+
+        @media (max-width: 800px) {
+
+            .container {
+
+                grid-template-columns: 1fr;
+
+                grid-template-rows: auto 500px;
+
+                height: auto;
+
+            }
+
+
+            #map {
+
+                height: 500px;
+
+            }
+
+        }
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =========================================
+     HEADER
+========================================== -->
+
+    <header>
+
+        <h1>🚦 Traffic Flow Prediction</h1>
+
+        <p>
+            Machine Learning Based Traffic Prediction System
+        </p>
+
+    </header>
+
+
+
+    <!-- =========================================
+     MAIN CONTAINER
+========================================== -->
+
+    <div class="container">
+
+
+        <!-- =====================================
+         LEFT CONTROL PANEL
+    ====================================== -->
+
+        <div class="panel">
+
+
+            <h2>Traffic Prediction</h2>
+
+
+            <!-- CURRENT LOCATION BUTTON -->
+
+            <button id="locationButton" onclick="getCurrentLocation()">
+                📍 Use My Current Location
+            </button>
+
+
+            <!-- LOCATION INFORMATION -->
+
+            <div class="location-info" id="locationInfo">
+                📍 Location not selected
+                <br>
+                Click on the map or use your current location.
+            </div>
+
+
+
+            <!-- =================================
+             TIME FEATURES
+        ================================== -->
+
+            <label for="hour">
+                Hour
+            </label>
+
+            <input type="number" id="hour" min="0" max="23" value="17">
+
+
+            <label for="day_of_week">
+                Day of Week
+            </label>
+
+            <select id="day_of_week">
+
+                <option value="0">
+                    Monday
+                </option>
+
+                <option value="1">
+                    Tuesday
+                </option>
+
+                <option value="2">
+                    Wednesday
+                </option>
+
+                <option value="3">
+                    Thursday
+                </option>
+
+                <option value="4">
+                    Friday
+                </option>
+
+                <option value="5">
+                    Saturday
+                </option>
+
+                <option value="6">
+                    Sunday
+                </option>
+
+            </select>
+
+
+
+            <label for="month">
+                Month
+            </label>
+
+            <input type="number" id="month" min="1" max="12" value="10">
+
+
+
+
+
+            <!-- =================================
+             WEATHER FEATURES
+        ================================== -->
+
+            <label for="temp">
+                Temperature (Kelvin)
+            </label>
+
+            <input type="number" id="temp" value="290">
+
+
+            <label for="rain_1h">
+                Rain (mm)
+            </label>
+
+            <input type="number" id="rain_1h" value="0" step="0.1">
+
+
+            <label for="snow_1h">
+                Snow (mm)
+            </label>
+
+            <input type="number" id="snow_1h" value="0" step="0.1">
+
+
+            <label for="clouds_all">
+                Cloud Cover (%)
+            </label>
+
+            <input type="number" id="clouds_all" min="0" max="100" value="20">
+
+
+
+            <!-- =================================
+             WEATHER TYPE
+        ================================== -->
+
+            <label for="weather_main">
+                Weather
+            </label>
+
+            <select id="weather_main">
+
+                <option value="Clear">
+                    Clear
+                </option>
+
+                <option value="Clouds">
+                    Clouds
+                </option>
+
+                <option value="Rain">
+                    Rain
+                </option>
+
+                <option value="Snow">
+                    Snow
+                </option>
+
+                <option value="Mist">
+                    Mist
+                </option>
+
+                <option value="Fog">
+                    Fog
+                </option>
+
+            </select>
+
+
+
+            <label for="weather_description">
+                Weather Description
+            </label>
+
+            <input type="text" id="weather_description" value="sky is clear">
+
+
+
+            <!-- =================================
+             HOLIDAY
+        ================================== -->
+
+            <label for="holiday">
+                Holiday
+            </label>
+
+            <select id="holiday">
+
+                <option value="None">
+                    None
+                </option>
+
+                <option value="Columbus Day">
+                    Columbus Day
+                </option>
+
+                <option value="Christmas Day">
+                    Christmas Day
+                </option>
+
+                <option value="Thanksgiving Day">
+                    Thanksgiving Day
+                </option>
+
+            </select>
+
+
+
+            <!-- =================================
+             PREDICT BUTTON
+        ================================== -->
+
+            <button onclick="predictTraffic()">
+
+                🤖 Predict Traffic
+
+            </button>
+
+
+
+            <!-- =================================
+             RESULT
+        ================================== -->
+
+            <div class="result">
+
+                <div class="result-title">
+                    🚦 Predicted Traffic
+                </div>
+
+                <div class="traffic-number" id="trafficNumber">
+                    --
+                </div>
+
+                <div class="vehicles">
+                    vehicles / hour
+                </div>
+
+                <div class="traffic-level" id="trafficLevel">
+                    --
+                </div>
+
+            </div>
+
+
+            <!-- =================================
+     PREDICTION SUMMARY
+================================== -->
+
+            <div class="info-card">
+
+                <strong>📊 Prediction Summary</strong>
+
+                <br><br>
+
+                <strong>📍 Location</strong>
+
+                <div id="summaryLocation">
+                    Not selected
+                </div>
+
+                <br>
+
+                <strong>🕐 Prediction Time</strong>
+
+                <div id="summaryTime">
+                    --
+                </div>
+
+                <br>
+
+                <strong>🚗 Predicted Traffic Flow</strong>
+
+                <div id="summaryTraffic">
+                    --
+                </div>
+
+                <br>
+
+                <strong>🚦 Traffic Condition</strong>
+
+                <div id="summaryLevel">
+                    --
+                </div>
+
+            </div>
+
+
+            <!-- =================================
+             PROJECT INFORMATION
+        ================================== -->
+
+            <div class="info-card">
+
+                <strong>About this project</strong>
+
+                <br><br>
+
+                This system uses a
+                <strong>Random Forest Regression</strong>
+                model to predict traffic volume.
+
+                <br><br>
+
+                The model was trained using the
+                <strong>UCI Metro Interstate Traffic Volume</strong>
+                dataset containing 48,204 observations.
+
+                <br><br>
+
+                Model R² Score:
+                <strong>92.42%</strong>
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- =====================================
+         MAP
+    ====================================== -->
+
+        <div id="map"></div>
+
+
+    </div>
+
+
+
+    <!-- =========================================
+     LEAFLET JAVASCRIPT
+========================================== -->
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+    </script>
+
+
+
+    <script>
+
+
+        /* ==========================================
+           GLOBAL VARIABLES
+        ========================================== */
+
+        let map;
+
+        let marker;
+
+
+
+        /* ==========================================
+           INITIALIZE MAP
+        ========================================== */
+
+        function initMap() {
+
+
+            /*
+               Default location:
+               India
+            */
+
+            const defaultLocation = [
+                20.5937,
+                78.9629
+            ];
+
+
+            /*
+               Create Leaflet map
+            */
+
+            map = L.map("map").setView(
+                defaultLocation,
+                5
+            );
+
+
+            /*
+               OpenStreetMap tiles
+            */
+
+            L.tileLayer(
+                "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                {
+
+                    maxZoom: 19,
+
+                    attribution:
+                        "&copy; OpenStreetMap contributors"
+
+                }
+            ).addTo(map);
+
+
+
+            /*
+               Allow user to click anywhere
+               on the map
+            */
+
+            map.on(
+                "click",
+                function (event) {
+
+
+                    const lat =
+                        event.latlng.lat;
+
+
+                    const lng =
+                        event.latlng.lng;
+
+
+                    setLocation(
+                        lat,
+                        lng,
+                        "Selected Location"
+                    );
+
+                }
+            );
+
+        }
+
+
+
+        /* ==========================================
+           SET LOCATION
+        ========================================== */
+
+        function setLocation(
+            lat,
+            lng,
+            locationName
+        ) {
+
+
+            /*
+               Remove old marker
+            */
+
+            if (marker) {
+
+                map.removeLayer(marker);
+
+            }
+
+
+            /*
+               Create new marker
+            */
+
+            marker = L.marker(
+                [lat, lng]
+            ).addTo(map);
+
+
+            /*
+               Popup
+            */
+
+            marker.bindPopup(
+
+                "<strong>" +
+                locationName +
+                "</strong><br>" +
+
+                "Latitude: " +
+                lat.toFixed(6) +
+
+                "<br>" +
+
+                "Longitude: " +
+                lng.toFixed(6)
+
+            ).openPopup();
+
+
+            /*
+               Zoom to location
+            */
+
+            map.setView(
+                [lat, lng],
+                15
+            );
+
+
+            /*
+               Update information box
+            */
+
+            document.getElementById(
+                "locationInfo"
+            ).innerHTML =
+
+                "📍 " +
+                locationName +
+
+                "<br>" +
+
+                "Latitude: " +
+                lat.toFixed(6) +
+
+                "<br>" +
+
+                "Longitude: " +
+                lng.toFixed(6);
+            document.getElementById(
+                "summaryLocation"
+            ).innerText =
+                locationName +
+                " (" +
+                lat.toFixed(4) +
+                ", " +
+                lng.toFixed(4) +
+                ")";
+
+        }
+
+
+
+        /* ==========================================
+           CURRENT LOCATION
+        ========================================== */
+
+        function getCurrentLocation() {
+
+
+            /*
+               Check browser support
+            */
+
+            if (!navigator.geolocation) {
+
+                alert(
+                    "Geolocation is not supported " +
+                    "by your browser."
+                );
+
+                return;
+
+            }
+
+
+            /*
+               Ask browser for location
+            */
+
+            navigator.geolocation.getCurrentPosition(
+
+                function (position) {
+
+
+                    const lat =
+                        position.coords.latitude;
+
+
+                    const lng =
+                        position.coords.longitude;
+
+
+                    /*
+                       Put marker on current location
+                    */
+
+                    setLocation(
+                        lat,
+                        lng,
+                        "Your Current Location"
+                    );
+
+
+                },
+
+
+                function (error) {
+
+
+                    alert(
+                        "Unable to get your location. " +
+                        "Please allow location access " +
+                        "in your browser."
+                    );
+
+                }
+
+            );
+
+        }
+
+
+
+        /* ==========================================
+           ML TRAFFIC PREDICTION
+        ========================================== */
+
+        async function predictTraffic() {
+
+            /*
+               Collect values from form
+            */
+
+            const data = {
+
+                hour:
+                    document.getElementById("hour").value,
+
+                day_of_week:
+                    document.getElementById("day_of_week").value,
+
+                month:
+                    document.getElementById("month").value,
+
+                temp:
+                    document.getElementById("temp").value,
+
+                rain_1h:
+                    document.getElementById("rain_1h").value,
+
+                snow_1h:
+                    document.getElementById("snow_1h").value,
+
+                clouds_all:
+                    document.getElementById("clouds_all").value,
+
+                holiday:
+                    document.getElementById("holiday").value,
+
+                weather_main:
+                    document.getElementById("weather_main").value,
+
+                weather_description:
+                    document.getElementById("weather_description").value
+
+            };
+
+
+            try {
+
+                /*
+                   Send data to Flask
+                */
+
+                const response = await fetch(
+                    "/predict",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+
+                        body: JSON.stringify(data)
+                    }
+                );
+
+
+                /*
+                   Check for server error
+                */
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        "Prediction request failed"
+                    );
+
+                }
+
+
+                /*
+                   Get JSON response
+                */
+
+                const result =
+                    await response.json();
+
+
+                /*
+                   =====================================
+                   DISPLAY MAIN PREDICTED TRAFFIC NUMBER
+                   =====================================
+                */
+
+                document.getElementById(
+                    "trafficNumber"
+                ).innerText =
+                    result.predicted_traffic;
+
+
+                /*
+                   =====================================
+                   DISPLAY TRAFFIC LEVEL
+                   =====================================
+                */
+
+                const trafficLevelElement =
+                    document.getElementById(
+                        "trafficLevel"
+                    );
+
+
+                trafficLevelElement.innerText =
+                    result.traffic_level;
+
+
+                /*
+                   =====================================
+                   CHANGE TRAFFIC LEVEL COLOR
+                   =====================================
+                */
+
+                if (result.traffic_level === "Low") {
+
+                    trafficLevelElement.style.color =
+                        "#16a34a";
+
+                }
+
+                else if (
+                    result.traffic_level === "Moderate"
+                ) {
+
+                    trafficLevelElement.style.color =
+                        "#ca8a04";
+
+                }
+
+                else if (
+                    result.traffic_level === "High"
+                ) {
+
+                    trafficLevelElement.style.color =
+                        "#ea580c";
+
+                }
+
+                else {
+
+                    trafficLevelElement.style.color =
+                        "#dc2626";
+
+                }
+
+
+                /*
+                   =====================================
+                   UPDATE PREDICTION SUMMARY
+                   =====================================
+                */
+
+                document.getElementById(
+                    "summaryTraffic"
+                ).innerText =
+                    result.predicted_traffic +
+                    " vehicles/hour";
+
+
+                document.getElementById(
+                    "summaryLevel"
+                ).innerText =
+                    result.traffic_level;
+
+
+                /*
+                   =====================================
+                   CURRENT PREDICTION TIME
+                   =====================================
+                */
+
+                const predictionTime =
+                    new Date();
+
+
+                document.getElementById(
+                    "summaryTime"
+                ).innerText =
+                    predictionTime.toLocaleString();
+
+
+            }
+
+            catch (error) {
+
+                console.error(error);
+
+                alert(
+                    "Prediction failed. " +
+                    "Please make sure the Flask server " +
+                    "is running."
+                );
+
+            }
+
+        }
+
+
+        /* ==========================================
+           START APPLICATION
+        ========================================== */
+
+        /* ==========================================
+           SET CURRENT DATE AND TIME
+        ========================================== */
+
+        function setCurrentDateTime() {
+
+            const now = new Date();
+
+            // Current hour
+            document.getElementById("hour").value =
+                now.getHours();
+
+
+            // JavaScript:
+            // Sunday = 0
+            // Monday = 1
+            // ...
+            //
+            // Our model:
+            // Monday = 0
+            // Tuesday = 1
+            // ...
+            // Sunday = 6
+
+            const jsDay = now.getDay();
+
+            const modelDay =
+                jsDay === 0 ? 6 : jsDay - 1;
+
+            document.getElementById("day_of_week").value =
+                modelDay;
+
+
+            // Current month
+            document.getElementById("month").value =
+                now.getMonth() + 1;
+        }
+
+
+        /* ==========================================
+           START APPLICATION
+        ========================================== */
+
+        initMap();
+
+        setCurrentDateTime();
+
+    </script>
+
+
+</body>
+
+</html>
